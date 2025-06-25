@@ -127,6 +127,10 @@ app.*.symbols
 *.iws
 .idea/caches/*
 .idea/libraries/*
+.idea/deploymentTargetSelector.xml
+.idea/gradle.xml
+.idea/kotlinc.xml
+.idea/migrations.xml
 .idea/misc.xml
 .idea/modules.xml
 .idea/vcs.xml
