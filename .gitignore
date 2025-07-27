@@ -135,3 +135,7 @@ app.*.symbols
 .idea/modules.xml
 .idea/vcs.xml
 .idea/workspace.xml
+
+# Google Service
+google-services.json
+GoogleService-Info.plist
