@@ -4,6 +4,6 @@ import 'package:ours/initializer.dart';
 import 'app.dart';
 
 Future main() async {
-  initialize();
+  await initialize();
   runApp(OursApp(flavor: 'production'));
 }

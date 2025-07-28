@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ours/app_navigation.dart';
 
 class OursApp extends StatelessWidget {
   final String flavor;
@@ -8,28 +8,9 @@ class OursApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: "Ours application",
-      home: Scaffold(
-        body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('testing').snapshots(),
-          builder: (
-            BuildContext buildContext,
-            AsyncSnapshot<QuerySnapshot> snapshots,
-          ) {
-            final docs = snapshots.data?.docs;
-            if (!snapshots.hasData) return SizedBox.shrink();
-            return ListView.builder(
-              itemCount: docs?.length,
-              itemBuilder: (BuildContext context, int index) {
-                final data = docs?[index].data() as Map;
-                final item = data['name'];
-                return ListTile(title: Text(item));
-              },
-            );
-          },
-        ),
-      ),
+      routerConfig: AppRouter.router,
     );
   }
 }
