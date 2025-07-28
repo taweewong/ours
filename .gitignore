@@ -135,6 +135,8 @@ app.*.symbols
 .idea/modules.xml
 .idea/vcs.xml
 .idea/workspace.xml
+.idea/AndroidProjectSystem.xml
+.idea/deviceManager.xml
 
 # Google Service
 google-services.json
