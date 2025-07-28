@@ -1,11 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 
-void initialize() async {
-  initialFirebase();
+Future<void> initialize() async {
+  await initialFirebase();
 }
 
-void initialFirebase() async {
+Future<void> initialFirebase() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 }
