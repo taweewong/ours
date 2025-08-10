@@ -1,6 +1,7 @@
 {
   "app": {
     "goToLogin": "Go to login",
-    "changeLang": "Change Language"
+    "changeLang": "Change Language",
+    "changeTheme": "Change Theme"
   }
 }
