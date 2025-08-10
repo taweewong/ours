@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:ours/presentation/shared/shared_preferences.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../const/shared_pref_key.dart';
 
 part 'theme_provider.g.dart';
 
@@ -10,18 +14,23 @@ class ThemeStateNotifier extends _$ThemeStateNotifier {
   static const String dark = "dark";
 
   @override
-  String build() {
-    state = light;
-    return state;
+  Future<String> build() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var savedTheme = sharedPreferences.getString(keyTheme) ?? light;
+    state = AsyncValue.data(savedTheme);
+    return state.value ?? light;
   }
 
-  void switchTheme() {
-    switch (state) {
+  void switchTheme() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    switch (state.value) {
       case light:
-        state = dark;
+        sharedPreferences.setString(keyTheme, dark);
+        state = AsyncValue.data(dark);
         break;
       default:
-        state = light;
+        sharedPreferences.setString(keyTheme, light);
+        state = AsyncValue.data(light);
         break;
     }
   }

@@ -12,7 +12,7 @@ class OursApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    String themeState = ref.watch(themeStateNotifierProvider);
+    String? themeState = ref.watch(themeStateNotifierProvider).value;
     ThemeData theme = themeState == ThemeStateNotifier.light ? lightTheme : darkTheme;
 
     return MaterialApp.router(
