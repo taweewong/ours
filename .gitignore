@@ -141,3 +141,6 @@ app.*.symbols
 # Google Service
 google-services.json
 GoogleService-Info.plist
+
+# Generated File
+*.g.dart
