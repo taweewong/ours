@@ -55,6 +55,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   children: [
                     LoginTextField(
                       hintText: context.tr('app.loginUsernameHint'),
+                      isPassword: false,
                       onTextChanged: (value) {
                         setState(() {
                           username = value;
@@ -64,6 +65,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     SizedBox(height: 16),
                     LoginTextField(
                       hintText: context.tr('app.loginPasswordHint'),
+                      isPassword: true,
                       onTextChanged: (value) {
                         setState(() {
                           password = value;
@@ -115,9 +117,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
 class LoginTextField extends StatelessWidget {
   final String hintText;
+  final bool isPassword;
   final Function(String) onTextChanged;
 
-  LoginTextField({required this.hintText, required this.onTextChanged});
+  LoginTextField({
+    required this.hintText, required this.onTextChanged, required this.isPassword
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -125,6 +130,9 @@ class LoginTextField extends StatelessWidget {
       style: context.theme.textTheme.bodyLarge?.copyWith(
         color: context.theme.customColors.secondaryColor,
       ),
+      obscureText: isPassword,
+      enableSuggestions: !isPassword,
+      autocorrect: !isPassword,
       decoration: InputDecoration(
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
