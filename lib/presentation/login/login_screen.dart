@@ -21,6 +21,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // ref.listen must be above the ref.watch
     ref.listen<AsyncValue<User?>>(loginStateNotifierProvider, (previous, next) {
       next.whenOrNull(
           data: (user) {
