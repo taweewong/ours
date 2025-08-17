@@ -55,16 +55,16 @@ final ourTheme = ThemeData(
 
 @immutable
 class CustomColors extends ThemeExtension<CustomColors> {
-  final Color? secondaryColor;
-  final Color? accentColor;
+  final Color secondaryColor;
+  final Color accentColor;
 
-  const CustomColors({this.secondaryColor, this.accentColor});
+  const CustomColors({required this.secondaryColor, required this.accentColor});
 
   @override
-  CustomColors copyWith({Color? secondaryColor, Color? accent}) {
+  CustomColors copyWith({Color? secondaryColor, Color? accentColor}) {
     return CustomColors(
-      secondaryColor: accent ?? this.secondaryColor,
-      accentColor: accent ?? this.accentColor,
+      secondaryColor: secondaryColor ?? this.secondaryColor,
+      accentColor: accentColor ?? this.accentColor,
     );
   }
 
@@ -72,8 +72,8 @@ class CustomColors extends ThemeExtension<CustomColors> {
   CustomColors lerp(ThemeExtension<CustomColors>? other, double t) {
     if (other is! CustomColors) return this;
     return CustomColors(
-      secondaryColor: Color.lerp(secondaryColor, other.secondaryColor, t),
-      accentColor: Color.lerp(accentColor, other.accentColor, t),
+      secondaryColor: Color.lerp(secondaryColor, other.secondaryColor, t) ?? secondaryColor,
+      accentColor: Color.lerp(accentColor, other.accentColor, t) ?? accentColor,
     );
   }
 }
@@ -96,5 +96,5 @@ extension ThemeGetter on BuildContext {
 }
 
 extension AppColorExtensionGetter on ThemeData {
-  CustomColors? get customColors => extension<CustomColors>();
+  CustomColors get customColors => extension<CustomColors>()!;
 }
