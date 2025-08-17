@@ -3,7 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ours/presentation/resource/theme_provider.dart';
+import 'package:ours/presentation/resource/theme_state.dart';
 import 'package:ours/presentation/resource/themes.dart';
 
 class SplashScreen extends ConsumerWidget {
@@ -36,7 +36,7 @@ class SplashScreen extends ConsumerWidget {
                           title: Text(
                             item,
                             style: context.theme.textTheme.titleLarge?.copyWith(
-                              color: context.theme.customColors?.secondaryColor
+                              color: context.theme.customColors.secondaryColor
                             ),
                           )
                         );
@@ -47,7 +47,7 @@ class SplashScreen extends ConsumerWidget {
                     child: SizedBox(
                       width: double.infinity,
                       child: Container(
-                        color: context.theme.customColors?.accentColor,
+                        color: context.theme.customColors.accentColor,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           child: Wrap(
