@@ -137,6 +137,7 @@ app.*.symbols
 .idea/workspace.xml
 .idea/AndroidProjectSystem.xml
 .idea/deviceManager.xml
+.idea/studiobot.xml
 
 # Google Service
 google-services.json
