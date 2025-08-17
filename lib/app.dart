@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ours/app_navigation.dart';
-import 'package:ours/presentation/resource/theme_provider.dart';
+import 'package:ours/presentation/resource/theme_state.dart';
 import 'package:ours/presentation/resource/themes.dart';
 
 class OursApp extends ConsumerWidget {
