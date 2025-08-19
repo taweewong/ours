@@ -2,6 +2,9 @@
   "app": {
     "goToLogin": "Go to login",
     "changeLang": "Change Language",
-    "changeTheme": "Change Theme"
+    "changeTheme": "Change Theme",
+    "loginUsernameHint": "Enter username",
+    "loginPasswordHint": "Enter password",
+    "loginButton": "Login"
   }
 }

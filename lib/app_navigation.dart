@@ -16,12 +16,38 @@ class AppRouter {
         routes: <RouteBase>[
           GoRoute(
             path: "login",
-            builder: (BuildContext context, GoRouterState state) {
-              return const LoginScreen();
+            pageBuilder: (BuildContext context, GoRouterState state) {
+              return state.transitionPage(const LoginScreen());
             },
           ),
         ],
       ),
     ],
   );
+}
+
+extension GoRouterExtensions on GoRouterState {
+  CustomTransitionPage transitionPage(Widget screen) {
+    return CustomTransitionPage(
+      key: pageKey,
+      child: screen,
+      transitionDuration: const Duration(milliseconds: 100),
+      transitionsBuilder: (
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+        Widget child,
+      ) {
+        return SlideTransition(
+          position: animation.drive(
+            Tween<Offset>(
+              begin: Offset(1, 0),
+              end: Offset.zero,
+            ).chain(CurveTween(curve: Curves.easeIn)),
+          ),
+          child: child,
+        );
+      },
+    );
+  }
 }

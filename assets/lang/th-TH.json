@@ -2,6 +2,9 @@
   "app": {
     "goToLogin": "ไปที่หน้า login",
     "changeLang": "เปลี่ยนภาษา",
-    "changeTheme": "เปลี่ยนธีม"
+    "changeTheme": "เปลี่ยนธีม",
+    "loginUsernameHint": "กรุณาใส่ชื่อผู้ใช้",
+    "loginPasswordHint": "กรุณาใส่รหัสผ่าน",
+    "loginButton": "เข้าสู่ระบบ"
   }
 }

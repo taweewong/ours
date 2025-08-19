@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
-import 'package:ours/presentation/shared/shared_preferences.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../const/shared_pref_key.dart';
 
-part 'theme_provider.g.dart';
+part 'theme_state.g.dart';
 
 @riverpod
 class ThemeStateNotifier extends _$ThemeStateNotifier {
