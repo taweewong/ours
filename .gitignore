@@ -145,3 +145,4 @@ GoogleService-Info.plist
 
 # Generated File
 *.g.dart
+*.freezed.dart
