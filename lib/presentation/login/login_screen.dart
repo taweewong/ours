@@ -1,9 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ours/presentation/resource/themes.dart';
 
+import '../../model/login/login_user.dart';
 import 'login_state.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -22,7 +22,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     // ref.listen must be above the ref.watch
-    ref.listen<AsyncValue<User?>>(loginStateNotifierProvider, (previous, next) {
+    ref.listen<AsyncValue<LoginUser?>>(loginStateNotifierProvider, (previous, next) {
       next.whenOrNull(
           data: (user) {
             if (user != null) {

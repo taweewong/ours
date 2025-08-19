@@ -3,12 +3,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:ours/const/error_code.dart';
 import 'package:ours/datasource/network/auth_service.dart';
+import 'package:ours/model/login/mapper/login_user_mapper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../model/login/login_user.dart';
 
 part 'auth_repository.g.dart';
 
 abstract class AuthRepository {
-  Future<AsyncValue<User?>> login({required String email, required String password});
+  Future<AsyncValue<LoginUser?>> login({
+    required String email,
+    required String password,
+  });
 }
 
 class AuthRepositoryImpl extends AuthRepository {
@@ -17,11 +23,14 @@ class AuthRepositoryImpl extends AuthRepository {
   AuthRepositoryImpl(this.service);
 
   @override
-  Future<AsyncValue<User?>> login({
+  Future<AsyncValue<LoginUser?>> login({
     required String email,
     required String password,
   }) async {
-    return service.login(email: email, password: password);
+    return AsyncValue.guard(() async {
+      final result = await service.login(email: email, password: password);
+      return result?.toLoginUser();
+    });
   }
 }
 

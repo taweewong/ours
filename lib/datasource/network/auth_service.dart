@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ours/const/error_code.dart';
+import 'package:ours/model/login/mapper/login_user_mapper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_service.g.dart';
 
 abstract class AuthService {
-  Future<AsyncValue<User?>> login({
+  Future<User?> login({
     required String email,
     required String password,
   });
@@ -13,7 +14,7 @@ abstract class AuthService {
 
 class AuthServiceImpl extends AuthService {
   @override
-  Future<AsyncValue<User?>> login({
+  Future<User?> login({
     required String email,
     required String password,
   }) async {
@@ -22,16 +23,12 @@ class AuthServiceImpl extends AuthService {
         email: email,
         password: password,
       );
-      return AsyncValue.data(credential.user);
-    } on FirebaseException catch (e, st) {
+      return credential.user;
+    } on FirebaseException catch (e) {
       if (e.code == firebaseErrorUserNotFound) {
-        return AsyncValue.error(
-          Exception("user not found."), st,
-        );
+        throw Exception("user not found.");
       } else {
-        return AsyncValue.error(
-          Exception("Incorrect username or password."), st,
-        );
+        throw Exception("Incorrect username or password.");
       }
     }
   }
