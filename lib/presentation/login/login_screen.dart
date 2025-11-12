@@ -27,7 +27,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       next.whenOrNull(
           data: (user) {
             if (user != null) {
-              context.go('/parking');
+              context.go('/parking_preview');
             }
           },
           error: (err, _) {
