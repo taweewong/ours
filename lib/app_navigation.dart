@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ours/presentation/camera/camera_screen.dart';
 import 'package:ours/presentation/login/login_screen.dart';
+import 'package:ours/presentation/parking/parking_screen.dart';
 import 'package:ours/presentation/parking_preview/parking_preview_screen.dart';
 import 'package:ours/presentation/splash/splash_screen.dart';
 
@@ -26,6 +27,12 @@ class AppRouter {
             path: "parking_preview",
             pageBuilder: (BuildContext context, GoRouterState state) {
               return state.transitionPage(const ParkingPreviewScreen());
+            },
+          ),
+          GoRoute(
+            path: "parking",
+            pageBuilder: (BuildContext context, GoRouterState state) {
+              return state.transitionPage(const ParkingScreen());
             },
           ),
           GoRoute(

@@ -7,8 +7,7 @@ class CameraScreen extends ConsumerStatefulWidget {
   const CameraScreen({super.key});
 
   @override
-  ConsumerState<CameraScreen> createState() =>
-      _CameraScreenState();
+  ConsumerState<CameraScreen> createState() => _CameraScreenState();
 }
 
 class _CameraScreenState extends ConsumerState<CameraScreen> {
@@ -40,29 +39,31 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    final isPortrait =
-        MediaQuery.of(context).orientation == Orientation.portrait;
-
-    double aspectRatio = 0;
-
-    if (isPortrait) {
-      aspectRatio =
-          controller.value.previewSize!.height /
-          controller.value.previewSize!.width;
-    } else {
-      aspectRatio =
-          controller.value.previewSize!.width /
-          controller.value.previewSize!.height;
-    }
-
-    return SafeArea(
-      child: SafeArea(
-        child: SizedBox.expand(
-          child: AspectRatio(
-            aspectRatio: aspectRatio,
-            child: CameraPreview(controller),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          Center(
+            child: AspectRatio(
+              aspectRatio: 9 / 16,
+              child: CameraPreview(controller),
+            ),
           ),
-        ),
+          Positioned(
+            bottom: 24,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: FloatingActionButton(
+                onPressed: () {
+                  // TODO: Implement video recording
+                },
+                backgroundColor: Colors.red,
+                child: const Icon(Icons.videocam),
+              ),
+            ),
+          ),
+        ]
       ),
     );
   }
