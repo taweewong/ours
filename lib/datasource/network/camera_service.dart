@@ -13,7 +13,7 @@ class CameraServiceImpl extends CameraService {
   Future<String> uploadVideo({required File videoFile}) async {
     try {
       final storageRef = FirebaseStorage.instance.ref();
-      final videoRef = storageRef.child('videos/parking_record.mp4');
+      final videoRef = storageRef.child('videos/parking_record_video.mp4');
 
       // Upload the file
       await videoRef.putFile(videoFile);

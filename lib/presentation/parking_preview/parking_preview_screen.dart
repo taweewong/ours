@@ -1,7 +1,10 @@
-import 'package:camera/camera.dart';
-import 'package:flutter/cupertino.dart';
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+import 'package:video_player/video_player.dart';
 
 class ParkingPreviewScreen extends ConsumerStatefulWidget {
   const ParkingPreviewScreen({super.key});
@@ -12,64 +15,109 @@ class ParkingPreviewScreen extends ConsumerStatefulWidget {
 }
 
 class _ParkingPreviewScreenState extends ConsumerState<ParkingPreviewScreen> {
-  late List<CameraDescription> _cameras;
-  late CameraController controller;
-  bool _isCameraInitialized = false;
+  VideoPlayerController? _controller;
+  bool _isLoading = true;
+  String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
-    _initCamera();
+    _initializeVideo();
   }
 
-  Future<void> _initCamera() async {
-    _cameras = await availableCameras();
-    controller = CameraController(_cameras[0], ResolutionPreset.high);
+  Future<void> _initializeVideo() async {
+    try {
+      // Check if local file exists first
+      final directory = await getApplicationDocumentsDirectory();
+      final localPath = p.join(directory.path, 'parking_record_video.mp4');
+      final localFile = File(localPath);
 
-    await controller.initialize();
-    if (mounted) {
-      setState(() {
-        _isCameraInitialized = true;
-      });
+      if (await localFile.exists()) {
+        // Play from local file
+        _controller = VideoPlayerController.file(localFile);
+      } else {
+        // Get video from Firebase Storage
+        final storageRef = FirebaseStorage.instance.ref();
+        final videoRef = storageRef.child('videos/parking_record_video.mp4');
+        final downloadUrl = await videoRef.getDownloadURL();
+
+        // Play from network URL
+        _controller = VideoPlayerController.networkUrl(Uri.parse(downloadUrl));
+      }
+
+      await _controller!.initialize();
+      await _controller!.setLooping(true);
+      await _controller!.play();
+
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = 'Failed to load video: ${e.toString()}';
+        });
+      }
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (!_isCameraInitialized || !controller.value.isInitialized) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    final isPortrait =
-        MediaQuery.of(context).orientation == Orientation.portrait;
-
-    double aspectRatio = 0;
-
-    if (isPortrait) {
-      aspectRatio =
-          controller.value.previewSize!.height /
-          controller.value.previewSize!.width;
-    } else {
-      aspectRatio =
-          controller.value.previewSize!.width /
-          controller.value.previewSize!.height;
-    }
-
-    return SafeArea(
-      child: SafeArea(
-        child: SizedBox.expand(
-          child: AspectRatio(
-            aspectRatio: aspectRatio,
-            child: CameraPreview(controller),
-          ),
-        ),
-      ),
-    );
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Center(
+        child: _isLoading
+            ? const CircularProgressIndicator()
+            : _errorMessage != null
+                ? _buildErrorMessage()
+                : _buildVideoPlayer(),
+      ),
+      floatingActionButton: _controller != null && _controller!.value.isInitialized
+          ? FloatingActionButton(
+              onPressed: () {
+                setState(() {
+                  _controller!.value.isPlaying
+                      ? _controller!.pause()
+                      : _controller!.play();
+                });
+              },
+              child: Icon(
+                _controller!.value.isPlaying ? Icons.pause : Icons.play_arrow,
+              ),
+            )
+          : null,
+    );
+  }
+
+  Widget _buildVideoPlayer() {
+    if (_controller != null && _controller!.value.isInitialized) {
+      return AspectRatio(
+        aspectRatio: _controller!.value.aspectRatio,
+        child: VideoPlayer(_controller!),
+      );
+    } else {
+      return const Text(
+        'Video not available',
+        style: TextStyle(color: Colors.white),
+      );
+    }
+  }
+
+  Widget _buildErrorMessage() => Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Text(
+      _errorMessage!,
+      style: const TextStyle(color: Colors.white),
+      textAlign: TextAlign.center,
+    ),
+  );
 }

@@ -19,6 +19,9 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
   late List<CameraDescription> _cameras;
   late CameraController controller;
   bool _isCameraInitialized = false;
+  double _currentZoomLevel = 1.0;
+  double _minZoomLevel = 1.0;
+  double _maxZoomLevel = 1.0;
 
   XFile? videoFile;
 
@@ -33,6 +36,12 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
     controller = CameraController(_cameras[0], ResolutionPreset.high);
 
     await controller.initialize();
+
+    // Get zoom levels
+    _maxZoomLevel = await controller.getMaxZoomLevel();
+    _minZoomLevel = await controller.getMinZoomLevel();
+    _currentZoomLevel = _minZoomLevel;
+
     if (mounted) {
       setState(() {
         _isCameraInitialized = true;
@@ -72,6 +81,39 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
             child: AspectRatio(
               aspectRatio: 9 / 16,
               child: CameraPreview(controller),
+            ),
+          ),
+          // Zoom slider
+          Positioned(
+            right: 16,
+            top: 100,
+            bottom: 100,
+            child: RotatedBox(
+              quarterTurns: 3,
+              child: SizedBox(
+                width: 200,
+                child: Row(
+                  children: [
+                    Icon(Icons.zoom_out, color: Colors.white, size: 20),
+                    Expanded(
+                      child: Slider(
+                        value: _currentZoomLevel,
+                        min: _minZoomLevel,
+                        max: _maxZoomLevel,
+                        activeColor: Colors.white,
+                        inactiveColor: Colors.white30,
+                        onChanged: (value) async {
+                          setState(() {
+                            _currentZoomLevel = value;
+                          });
+                          await controller.setZoomLevel(value);
+                        },
+                      ),
+                    ),
+                    Icon(Icons.zoom_in, color: Colors.white, size: 20),
+                  ],
+                ),
+              ),
             ),
           ),
           Positioned(
@@ -207,7 +249,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
 
   Future<File> _saveFileToInternalStorage(XFile xfile) async {
     final directory = await getApplicationDocumentsDirectory();
-    final targetPath = p.join(directory.path, 'parking_record.mp4');
+    final targetPath = p.join(directory.path, 'parking_record_video.mp4');
 
     final previousFile = File(targetPath);
 
@@ -219,13 +261,6 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
     // Copy the recorded video to the target path
     final sourceFile = File(xfile.path);
     final resultFile = await sourceFile.copy(targetPath);
-
-    if (await resultFile.exists()) {
-      print('DEBUG_CAMERA: resultFile exist');
-      print('DEBUG_CAMERA: ${resultFile.path}');
-    } else {
-      print('DEBUG_CAMERA: resultFile not exist');
-    }
 
     return resultFile;
   }
