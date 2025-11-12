@@ -4,7 +4,6 @@ import 'package:ours/presentation/camera/camera_screen.dart';
 import 'package:ours/presentation/login/login_screen.dart';
 import 'package:ours/presentation/parking/parking_screen.dart';
 import 'package:ours/presentation/parking_preview/parking_preview_screen.dart';
-import 'package:ours/presentation/splash/splash_screen.dart';
 
 class AppRouter {
   static GoRouter get router => _router;
@@ -14,34 +13,28 @@ class AppRouter {
       GoRoute(
         path: "/",
         builder: (BuildContext context, GoRouterState state) {
-          return const SplashScreen();
+          return const LoginScreen();
+        },
+      ),
+      GoRoute(
+        path: "/parking",
+        builder: (BuildContext context, GoRouterState state) {
+          return const ParkingScreen();
         },
         routes: <RouteBase>[
           GoRoute(
-            path: "login",
-            pageBuilder: (BuildContext context, GoRouterState state) {
-              return state.transitionPage(const LoginScreen());
-            },
-          ),
-          GoRoute(
-            path: "parking_preview",
+            path: "preview",
             pageBuilder: (BuildContext context, GoRouterState state) {
               return state.transitionPage(const ParkingPreviewScreen());
             },
           ),
-          GoRoute(
-            path: "parking",
-            pageBuilder: (BuildContext context, GoRouterState state) {
-              return state.transitionPage(const ParkingScreen());
-            },
-          ),
-          GoRoute(
-            path: "camera",
-            pageBuilder: (BuildContext context, GoRouterState state) {
-              return state.transitionPage(const CameraScreen());
-            },
-          ),
         ],
+      ),
+      GoRoute(
+        path: "/camera",
+        builder: (BuildContext context, GoRouterState state) {
+          return const CameraScreen();
+        },
       ),
     ],
   );
