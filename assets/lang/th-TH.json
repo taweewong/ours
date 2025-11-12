@@ -5,6 +5,8 @@
     "changeTheme": "เปลี่ยนธีม",
     "loginUsernameHint": "กรุณาใส่ชื่อผู้ใช้",
     "loginPasswordHint": "กรุณาใส่รหัสผ่าน",
-    "loginButton": "เข้าสู่ระบบ"
+    "loginButton": "เข้าสู่ระบบ",
+    "goToParkingPreview": "ดูที่จอด",
+    "goToParkingCamera": "บันทึกที่จอดใหม่"
   }
 }

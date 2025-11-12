@@ -5,6 +5,8 @@
     "changeTheme": "Change Theme",
     "loginUsernameHint": "Enter username",
     "loginPasswordHint": "Enter password",
-    "loginButton": "Login"
+    "loginButton": "Login",
+    "goToParkingPreview": "See preview",
+    "goToParkingCamera": "New parking"
   }
 }

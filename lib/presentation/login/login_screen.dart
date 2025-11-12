@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ours/presentation/resource/themes.dart';
 
 import '../../model/login/login_user.dart';
@@ -26,11 +27,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       next.whenOrNull(
           data: (user) {
             if (user != null) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(user.uid)));
-              });
+              context.go('/parking');
             }
           },
           error: (err, _) {
