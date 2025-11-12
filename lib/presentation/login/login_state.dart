@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ours/const/shared_pref_key.dart';
 import 'package:ours/model/login/login_user.dart';
 import 'package:ours/repository/auth_repository.dart';

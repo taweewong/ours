@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
+import 'package:go_router/go_router.dart';
+import 'package:ours/presentation/camera/camera_state.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -42,6 +42,24 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Listen to camera state for upload status
+    ref.listen<AsyncValue<String?>>(cameraStateNotifierProvider, (previous, next) {
+      next.whenOrNull(
+        data: (downloadUrl) {
+          if (downloadUrl != null) {
+            // Upload successful, navigate back
+            Navigator.of(context).pop(); // Close dialog
+            context.pop(); // Navigate back to previous screen
+          }
+        },
+        error: (err, _) {
+          Navigator.of(context).pop(); // Close dialog
+          print('DEBUG_CAMERA: ${err.toString()}');
+          showInSnackBar('Upload failed: ${err.toString()}');
+        },
+      );
+    });
+
     if (!_isCameraInitialized || !controller.value.isInitialized) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -155,30 +173,61 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
       return;
     }
     try {
-      await _saveFileToInternalStorage(videoFile!);
+      final savedFile = await _saveFileToInternalStorage(videoFile!);
       showInSnackBar('Video saved!');
+
+      // Show upload dialog
+      _showUploadDialog();
+
+      // Start upload to Firebase
+      ref.read(cameraStateNotifierProvider.notifier).uploadVideo(videoFile: savedFile);
     } catch (e) {
       showInSnackBar('Error saving video: $e');
       print("DEBUG_CAMERA: Error saving video: $e");
     }
   }
 
+  void _showUploadDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 20),
+              Text('Uploading video...'),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Future<File> _saveFileToInternalStorage(XFile xfile) async {
     final directory = await getApplicationDocumentsDirectory();
     final targetPath = p.join(directory.path, 'parking_record.mp4');
 
-    final targetFile = File(targetPath);
+    final previousFile = File(targetPath);
 
     // Delete existing file if it exists (to overwrite)
-    if (await targetFile.exists()) {
-      await targetFile.delete();
+    if (await previousFile.exists()) {
+      await previousFile.delete();
     }
 
     // Copy the recorded video to the target path
     final sourceFile = File(xfile.path);
-    await sourceFile.copy(targetPath);
+    final resultFile = await sourceFile.copy(targetPath);
 
-    return targetFile;
+    if (await resultFile.exists()) {
+      print('DEBUG_CAMERA: resultFile exist');
+      print('DEBUG_CAMERA: ${resultFile.path}');
+    } else {
+      print('DEBUG_CAMERA: resultFile not exist');
+    }
+
+    return resultFile;
   }
 
   void _showCameraException(CameraException e) {
